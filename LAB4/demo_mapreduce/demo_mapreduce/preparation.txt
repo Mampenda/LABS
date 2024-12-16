@@ -1,0 +1,212 @@
+On hadoopedge
+
+########################################################################
+Preparations for all examples.
+
+
+########################################################################
+Slide 29
+Som bjarte@hadoopedge
+
+https://wiki.apache.org/hadoop/wordcount/WordCount
+http://hadoop.apache.org/docs/current/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html
+
+WordCount
+hdfs dfs -test -d /user/${USER}/wordcount && hdfs dfs -rm -skipTrash -r /user/${USER}/wordcount
+hdfs dfs -mkdir /user/${USER}/wordcount
+hdfs dfs -ls /user/${USER}
+
+------------------------------------------------------------------------
+
+[ -d ~/hadoop-files/wordcount/input/ ] && rm -rf ~/hadoop-files/wordcount/input/
+mkdir -p ~/hadoop-files/wordcount/input/
+
+cat > ~/hadoop-files/wordcount/input/file01.txt <<EOF
+Hello You Hello
+Hello Everybody
+EOF
+
+cat > ~/hadoop-files/wordcount/input/file02.txt <<EOF
+I Hear You
+I See You
+Where Are Everybody
+EOF
+
+ll ~/hadoop-files/wordcount/input/
+cat ~/hadoop-files/wordcount/input/*
+
+------------------------------------------------------------------------
+
+hdfs dfs -test -d /user/${USER}/wordcount/input && hdfs dfs -rm -skipTrash -r /user/${USER}/wordcount/input
+hdfs dfs -put ~/hadoop-files/wordcount/input /user/${USER}/wordcount/
+
+hdfs dfs -ls /user/${USER}/wordcount/input/
+hdfs dfs -cat "/user/${USER}/wordcount/input/*"
+
+------------------------------------------------------------------------
+
+
+[ -d ~/hadoop-files/wordcount/java ] && rm -rf ~/hadoop-files/wordcount/java
+mkdir ~/hadoop-files/wordcount/java/
+
+------------------------------------------------------------------------
+
+wget -P ~/hadoop-files/wordcount/java/ \
+  http://eple.hvl.no/fag/dat351/h2024/WordCount.java
+
+------------------------------------------------------------------------
+
+cd ~/hadoop-files/wordcount/java/
+hadoop com.sun.tools.javac.Main WordCount.java
+jar cf wc.jar WordCount*.class
+
+
+########################################################################
+Slide 30
+
+WordCountTools
+
+hdfs dfs -test -d /user/${USER}/wordcounttools && hdfs dfs -rm -skipTrash -r /user/${USER}/wordcounttools
+hdfs dfs -mkdir /user/${USER}/wordcounttools
+
+[ -d ~/hadoop-files/wordcounttools/java/ ] && rm -rf ~/hadoop-files/wordcounttools/java/
+mkdir -p  ~/hadoop-files/wordcounttools/java/
+wget -P ~/hadoop-files/wordcounttools/java/ http://eple.hvl.no/fag/dat351/h2024/WordCountTools.java
+
+cd ~/hadoop-files/wordcounttools/java/
+$HADOOP_HOME/bin/hadoop com.sun.tools.javac.Main WordCountTools.java
+jar cf wctools.jar WordCountTool*.class
+
+
+########################################################################
+Slide 30
+
+MinimumValue og MapCount
+
+[ -d ~/hadoop-files/minimumvalue ] && rm -rf ~/hadoop-files/minimumvalue ]
+mkdir ~/hadoop-files/minimumvalue
+mkdir ~/hadoop-files/minimumvalue/java/
+mkdir ~/hadoop-files/minimumvalue/c/
+
+wget -P ~/hadoop-files/minimumvalue/java/ http://eple.hvl.no/fag/dat351/h2024/MinimumValue.java
+wget -P ~/hadoop-files/minimumvalue/c/ http://eple.hvl.no/fag/dat351/h2024/numberprint.c
+
+[ -d ~/hadoop-files/minimumvalue/input ] && rm -rf ~/hadoop-files/minimumvalue/input
+mkdir ~/hadoop-files/minimumvalue/input
+#cd ~/hadoop-files/minimumvalue/c/
+#cc numberprint.c -lm -o numberprint
+#./numberprint 1000000 764545 >  ~/hadoop-files/minimumvalue/input/file0
+#./numberprint 1000000 12435  >  ~/hadoop-files/minimumvalue/input/file1
+#./numberprint 1000000 873245 >  ~/hadoop-files/minimumvalue/input/file2
+
+#cat ~/hadoop-files/minimumvalue/input/file0.txt | wc -l
+#cat ~/hadoop-files/minimumvalue/input/file1.txt | wc -l
+#cat ~/hadoop-files/minimumvalue/input/file2.txt | wc -l
+#cat ~/hadoop-files/minimumvalue/input/file0.txt | head -n10
+
+cp /share/dat351/input/* ~/hadoop-files/minimumvalue/input/
+
+hdfs dfs -test -d /user/${USER}/minimumvalue && hdfs dfs -rm -skipTrash -r /user/${USER}/minimumvalue
+hdfs dfs -mkdir /user/${USER}/minimumvalue
+
+hdfs dfs -put ~/hadoop-files/minimumvalue/input /user/${USER}/minimumvalue
+hdfs dfs -ls /user/${USER}/minimumvalue
+hdfs dfs -ls /user/${USER}/minimumvalue/input
+
+[ -d ~/hadoop-files/mapcount ] && rm -rf ~/hadoop-files/mapcount
+mkdir -p ~/hadoop-files/mapcount
+mkdir ~/hadoop-files/mapcount/java
+wget -P ~/hadoop-files/mapcount/java/ http://eple.hvl.no/fag/dat351/h2024/MapCount.java
+
+cd ~/hadoop-files/mapcount/java
+#less MapCount.java
+hadoop com.sun.tools.javac.Main MapCount.java
+jar cf mapcount.jar MapCount*.class
+
+hdfs dfs -test -d /user/${USER}/mapcount && hdfs dfs -rm -skipTrash -r /user/${USER}/mapcount
+hdfs dfs -mkdir /user/${USER}/mapcount
+
+hdfs dfs -test -d /user/${USER}/mapcount/output && hdfs dfs -rm -skipTrash -r /user/${USER}/mapcount/output
+hadoop jar ~/hadoop-files/mapcount/java/mapcount.jar MapCount /user/${USER}/minimumvalue/input /user/${USER}/mapcount/output
+
+hdfs dfs -ls "/user/${USER}/mapcount/output/*"
+hdfs dfs -cat "/user/${USER}/mapcount/output/*"
+
+---
+#Compile and run MinValue
+
+cd ~/hadoop-files/minimumvalue/java/ 
+hadoop com.sun.tools.javac.Main MinimumValue.java
+jar cf minimumvalue.jar MinimumValue*.class
+
+hdfs dfs -test -d /user/${USER}/minimumvalue/output && hdfs dfs -rm -skipTrash -r /user/${USER}/minimumvalue/output
+hadoop jar ~/hadoop-files/minimumvalue/java/minimumvalue.jar MinimumValue /user/${USER}/minimumvalue/input /user/${USER}/minimumvalue/output
+
+hdfs dfs -ls "/user/${USER}/minimumvalue/output/*"
+hdfs dfs -cat "/user/${USER}/minimumvalue/output/*"
+
+
+########################################################################
+Slide 30
+
+#MinimumValueSort
+
+[ -d ~/hadoop-files/minimumvaluesort/java/ ] && rm -rf  ~/hadoop-files/minimumvaluesort/java
+mkdir -p ~/hadoop-files/minimumvaluesort/java/
+wget -P ~/hadoop-files/minimumvaluesort/java/ http://eple.hvl.no/fag/dat351/h2024/MinimumValueSort.java
+
+cd ~/hadoop-files/minimumvaluesort/java/ 
+hadoop com.sun.tools.javac.Main MinimumValueSort.java
+jar cf minimumvaluesort.jar MinimumValueSort*.class
+
+hdfs dfs -test -d /user/${USER}/minimumvaluesort/output && hdfs dfs -rm -skipTrash -r /user/${USER}/minimumvaluesort/output
+hadoop jar ~/hadoop-files/minimumvaluesort/java/minimumvaluesort.jar MinimumValueSort /user/${USER}/minimumvalue/input /user/${USER}/minimumvaluesort/output
+
+hdfs dfs -ls "/user/${USER}/minimumvaluesort/output/*"
+hdfs dfs -cat "/user/${USER}/minimumvaluesort/output/*" | head
+
+
+########################################################################
+#Slide 32
+
+#C++
+#https://wiki.apache.org/hadoop/C%2B%2BWordCount
+
+rm -rf ~/pipes
+mkdir ~/pipes
+wget -P ~/pipes http://eple.hvl.no/fag/dat351/h2024/wordcount-simple.cc
+
+#Upload to hdfs
+hdfs dfs -test -d pipes && hdfs dfs -rmdir pipes
+hdfs dfs -test -d bin && hdfs dfs -rmdir bin
+
+cd ~/pipes
+
+g++ wordcount-simple.cc -owordcount-simple \
+-L/usr/local/lib/native \
+-lhadooputils -lhadooppipes -lpthread -lcrypto -lssl -ltirpc \
+-Wall
+
+hdfs dfs -mkdir pipes
+hdfs dfs -mkdir bin
+hdfs dfs -put wordcount-simple bin/
+
+hdfs dfs -ls bin/
+#less ~/pipes/wordcount-simple.cc
+
+hdfs dfs -ls "wordcount/input/*"
+hdfs dfs -cat "wordcount/input/*"
+
+hdfs dfs -test -d pipes/output && hdfs dfs -rm -skipTrash -r pipes/output
+mapred pipes -D mapreduce.pipes.isjavarecordreader=true  \
+             -D mapreduce.pipes.isjavarecordwriter=true \
+             -input wordcount/input \
+             -output pipes/output  \
+             -program bin/wordcount-simple
+
+
+hdfs dfs -ls "pipes/output/*"
+hdfs dfs -cat "pipes/output/*"
+
+
+########################################################################

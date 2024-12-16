@@ -1,0 +1,356 @@
+########################################################################
+#Slide 12
+#Colate - Kombinere, sammenstille
+
+
+########################################################################
+#Slide 26
+
+#NameNode (DFS)
+#* http://hadoopname.dat351:9870
+#Yarn resource manager
+#* http://hadoopname.dat351:8088
+#MapReduce JobHistory Server 
+#* http://hadoophistory.dat351:19888
+
+#Use a SOCKS5 tunnel to eple to see the web pages.
+#On local computer:
+ssh -f -D 7722 -N -l bjarte eple
+
+#Stop
+ps -C ssh -o pid,cmd | grep 'ssh -f -D 7722' | awk -e '{print $1}' | xargs kill
+
+-------------------
+#If Firefox on local computer
+# Edit|Settings|General|Network Settings
+# Rediger|Instillinger|Generelt (Options|General|Network Settings)
+# Menu Nettverksinnstillinger, and clikc button Innstillinger (Settings))
+
+#Choose "Manuell proxy-innstillinger" (Manual Proxy Configuration)
+#For SOCKS-server, use localhost and port 7722
+#Select SOCKS v5
+
+-------------------
+#Through OS with Gnome
+#Settings | Network | proxy
+
+#Firefox:
+#Proxy | Use system settings
+
+
+########################################################################
+#Slide 29
+#WordCount, Java
+#Sjekk at alt kjører, fra eple
+~/bin/hadoop.sh statushadoop
+
+#As bjarte@hadoopedge
+
+rm -f ~/hadoop-files/wordcount/java/*.class
+rm -f ~/hadoop-files/wordcount/java/*.jar
+
+ls -l ~/hadoop-files/wordcount/java/
+less ~/hadoop-files/wordcount/java/WordCount.java
+
+cd ~/hadoop-files/wordcount/java/
+hadoop com.sun.tools.javac.Main WordCount.java
+jar cf wc.jar WordCount*.class
+ls -l
+
+hdfs dfs -ls wordcount/input
+hdfs dfs -cat /user/bjarte/wordcount/input/file01.txt
+hdfs dfs -cat /user/bjarte/wordcount/input/file02.txt
+
+hdfs dfs -test -d /user/bjarte/wordcount/output && hdfs dfs -rm -skipTrash -r /user/bjarte/wordcount/output
+hadoop jar ~/hadoop-files/wordcount/java/wc.jar WordCount /user/bjarte/wordcount/input /user/bjarte/wordcount/output
+
+hdfs dfs -ls /user/bjarte/wordcount/output
+hdfs dfs -cat "/user/bjarte/wordcount/output/*"
+hdfs dfs -cat "/user/bjarte/wordcount/input/*"
+
+#Remove WARN:
+2024-09-16 11:28:43,193 WARN mapreduce.JobResourceUploader: Hadoop command-line option parsing not performed. Implement the Tool interface and execute your application with ToolRunner to remedy this.
+# -> Use WordCountTools
+
+
+########################################################################
+#Slide 30
+#WordCountTools, Java
+
+#As bjarte@hadoopedge
+
+rm -f ~/hadoop-files/wordcounttools/java/*.class
+rm -f ~/hadoop-files/wordcounttools/java/*.jar
+
+ls -l ~/hadoop-files/wordcounttools/java/
+less ~/hadoop-files/wordcounttools/java/WordCountTools.java
+
+cd ~/hadoop-files/wordcounttools/java/
+hadoop com.sun.tools.javac.Main WordCountTools.java
+jar cf wctools.jar WordCountTool*.class
+ls -l
+
+hdfs dfs -ls /user/bjarte/wordcount/input
+hdfs dfs -cat /user/bjarte/wordcount/input/file01.txt
+hdfs dfs -cat /user/bjarte/wordcount/input/file02.txt
+
+hdfs dfs -test -d /user/bjarte/wordcounttools/output && hdfs dfs -rm -skipTrash -r /user/bjarte/wordcounttools/output
+hadoop jar ~/hadoop-files/wordcounttools/java/wctools.jar \
+  WordCountTools /user/bjarte/wordcount/input /user/bjarte/wordcounttools/output
+
+hdfs dfs -ls /user/bjarte/wordcounttools/output
+hdfs dfs -cat "/user/bjarte/wordcounttools/output/*"
+hdfs dfs -cat "/user/bjarte/wordcount/input/*"
+
+
+########################################################################
+#Slide 30
+#MapCount
+
+rm -f ~/hadoop-files/mapcount/java/*.class
+rm -f ~/hadoop-files/mapcount/java/*.jar
+
+ls -l ~/hadoop-files/mapcount/java
+less ~/hadoop-files/mapcount/java/MapCount.java
+
+cd ~/hadoop-files/mapcount/java
+hadoop com.sun.tools.javac.Main MapCount.java
+jar cf mapcount.jar MapCount*.class
+ls -l
+
+hdfs dfs -ls /user/bjarte/minimumvalue/input
+hdfs dfs -cat /user/bjarte/minimumvalue/input/file0 | head -n10
+hdfs dfs -cat /user/bjarte/minimumvalue/input/file0 | wc -w
+hdfs dfs -cat /user/bjarte/minimumvalue/input/file1 | wc -w
+hdfs dfs -cat /user/bjarte/minimumvalue/input/file2 | wc -w
+
+hdfs dfs -test -d /user/bjarte/mapcount/output && hdfs dfs -rm -skipTrash -r /user/bjarte/mapcount/output
+hadoop jar ~/hadoop-files/mapcount/java/mapcount.jar MapCount /user/bjarte/minimumvalue/input /user/bjarte/mapcount/output
+
+hdfs dfs -ls "/user/bjarte/mapcount/output/*"
+hdfs dfs -cat "/user/bjarte/mapcount/output/*"
+
+
+########################################################################
+#Slide 30
+#MinValue, Java
+
+#inputformats:
+#https://hadoop.apache.org/docs/current3/api/org/apache/hadoop/mapreduce/class-use/InputFormat.html
+
+#http://data-flair.training/blogs/how-hadoop-mapreduce-works/
+#http://data-flair.training/blogs/hadoop-inputformat/
+#Default is TextInputFormat
+
+rm -f ~/hadoop-files/minimumvalue/java/*.class
+rm -f ~/hadoop-files/minimumvalue/java/*.jar
+
+ls -l ~/hadoop-files/minimumvalue/java/
+less ~/hadoop-files/minimumvalue/java/MinimumValue.java
+
+cd ~/hadoop-files/minimumvalue/java/
+hadoop com.sun.tools.javac.Main MinimumValue.java
+jar cf minimumvalue.jar MinimumValue*.class
+ls -l
+
+hdfs dfs -ls /user/bjarte/minimumvalue/input/
+hdfs dfs -cat /user/bjarte/minimumvalue/input/file0 | less
+hdfs dfs -cat /user/bjarte/minimumvalue/input/file0 | wc -w
+hdfs dfs -cat /user/bjarte/minimumvalue/input/file1 | wc -w
+hdfs dfs -cat /user/bjarte/minimumvalue/input/file2 | wc -w
+
+hdfs dfs -test -d /user/bjarte/minimumvalue/output && hdfs dfs -rm -skipTrash -r /user/bjarte/minimumvalue/output
+hadoop jar ~/hadoop-files/minimumvalue/java/minimumvalue.jar MinimumValue /user/bjarte/minimumvalue/input /user/bjarte/minimumvalue/output
+
+hdfs dfs -ls "/user/bjarte/minimumvalue/output/*"
+hdfs dfs -cat "/user/bjarte/minimumvalue/output/*"
+
+
+########################################################################
+#Slide 30
+#MinValueSort, Java
+
+rm -f ~/hadoop-files/minimumvaluesort/java/*.class
+rm -f ~/hadoop-files/minimumvaluesort/java/*.jar
+
+ls -l ~/hadoop-files/minimumvaluesort/java/
+less ~/hadoop-files/minimumvaluesort/java/MinimumValueSort.java
+
+cd ~/hadoop-files/minimumvaluesort/java/
+hadoop com.sun.tools.javac.Main MinimumValueSort.java
+jar cf minimumvaluesort.jar MinimumValueSort*.class
+ls -l
+
+hdfs dfs -ls /user/bjarte/minimumvalue/input/
+hdfs dfs -cat /user/bjarte/minimumvalue/input/file0 | less
+hdfs dfs -cat /user/bjarte/minimumvalue/input/file0 | wc -w
+hdfs dfs -cat /user/bjarte/minimumvalue/input/file1 | wc -w
+hdfs dfs -cat /user/bjarte/minimumvalue/input/file2 | wc -w
+
+hdfs dfs -test -d /user/bjarte/minimumvaluesort/output && hdfs dfs -rm -skipTrash -r /user/bjarte/minimumvaluesort/output
+hadoop jar ~/hadoop-files/minimumvaluesort/java/minimumvaluesort.jar MinimumValueSort /user/bjarte/minimumvalue/input /user/bjarte/minimumvaluesort/output
+
+hdfs dfs -ls "/user/bjarte/minimumvaluesort/output/*"
+hdfs dfs -cat "/user/bjarte/minimumvaluesort/output/*" | head
+
+
+########################################################################
+#Slide 32
+#C++ and hadoop pipes
+
+# Klasse WordCountMap arver HadoopPipes::Mapper
+# Klasse WordCountReduce arver HadoopPipes::Reducer
+#https://wiki.apache.org/hadoop/C%2B%2BWordCount
+#http://www.science.smith.edu/dftwiki/index.php/Hadoop_Tutorial_2.2_--_Running_C++_Programs_on_Hadoop
+
+
+# Must rebuild the libraries for CentOS7, see DAT351/install/hadoop/hadoop-pipes, CentOS8 OK
+
+cd ~/pipes
+less wordcount-simple.cc
+
+#See declaration of emit in
+less /usr/local/hadoop/last/include/Pipes.hh
+
+g++ wordcount-simple.cc -owordcount-simple \
+-L/usr/local/lib/native \
+-lhadooputils -lhadooppipes -lpthread -lcrypto -lssl -ltirpc \
+-Wall
+
+#Uploding to hdfs
+hdfs dfs -test -f bin/wordcount-simple && hdfs dfs -rm bin/wordcount-simple
+hdfs dfs -put wordcount-simple bin/
+
+hdfs dfs -ls bin/
+
+hdfs dfs -ls "wordcount/input/*"
+hdfs dfs -cat "wordcount/input/*"
+
+hdfs dfs -test -d pipes/output && hdfs dfs -rm -skipTrash -r pipes/output
+mapred pipes -D mapreduce.pipes.isjavarecordreader=true  \
+             -D mapreduce.pipes.isjavarecordwriter=true \
+             -input wordcount/input \
+             -output pipes/output  \
+             -program bin/wordcount-simple
+
+hdfs dfs -ls "pipes/output/*"
+hdfs dfs -cat "pipes/output/*"
+
+
+########################################################################
+#Slide 36
+#STREAMING
+
+hdfs dfs -ls wordcount/input
+hdfs dfs -cat "wordcount/input/*"
+hdfs dfs -cat wordcount/input/file01.txt
+hdfs dfs -cat wordcount/input/file02.txt
+
+hdfs dfs -cat 'wordcount/input/*' | cat | wc
+cat ~/hadoop-files/wordcount/input/* | cat | wc
+
+#On -mapper and -reducer
+#All text up to first tab is consiserede as the key.
+#If no tab, all of line is the key, and value is null.
+#Can be customized with the -inputformat and -outputformat command options
+
+hdfs dfs -test -d streaming/output && hdfs dfs -rm -skipTrash -r streaming/output
+hadoop jar $HADOOP_HOME/share/hadoop/tools/lib/hadoop-streaming-3.3.4.jar \
+    -input /user/bjarte/wordcount/input/  \
+    -output /user/bjarte/streaming/output \
+    -mapper /bin/cat \
+    -reducer /bin/wc
+
+hdfs dfs -ls /user/bjarte/streaming/output
+hdfs dfs -cat "/user/bjarte/streaming/output/*"
+hdfs dfs -cat "/user/bjarte/wordcount/input/*" | wc
+hdfs dfs -cat "/user/bjarte/wordcount/input/*" | cat | wc
+cat ~/hadoop-files/wordcount/input/* | wc
+
+hdfs dfs -test -d streaming/output && hdfs dfs -rm -skipTrash -r streaming/output
+hadoop jar $HADOOP_HOME/share/hadoop/tools/lib/hadoop-streaming-3.3.4.jar \
+    -input /user/bjarte/wordcount/input/  \
+    -output /user/bjarte/streaming/output \
+    -mapper /bin/cat \
+    -reducer "/bin/cat -T"
+hdfs dfs -cat "/user/bjarte/streaming/output/*"
+
+hdfs dfs -test -d streaming/output && hdfs dfs -rm -skipTrash -r streaming/output
+hadoop jar $HADOOP_HOME/share/hadoop/tools/lib/hadoop-streaming-3.3.4.jar \
+    -files "$HOME/bin/minwc.sh" \
+    -input /user/bjarte/wordcount/input/  \
+    -output /user/bjarte/streaming/output \
+    -mapper /bin/cat \
+    -reducer minwc.sh
+hdfs dfs -cat "/user/bjarte/streaming/output/*"
+cat ~/hadoop-files/wordcount/input/* | wc
+
+cat -e ~/hadoop-files/wordcount/input/*
+
+#Difference is due to the tab character, added by Hadoop to spearate the key and the value
+
+
+########################################################################
+#Slide 28
+#Demo using PIG
+
+#As bjarte@hadoopedge
+hdfs dfs -test -d pig && hdfs dfs -rm -r pig
+
+
+hdfs dfs -mkdir pig
+hdfs dfs -put /etc/passwd pig
+hdfs dfs -ls pig
+hdfs dfs -cat pig/passwd
+
+mkdir ~/pig
+cd ~/pig
+
+cat > id.pig <<EOF
+A = LOAD 'pig/passwd' USING PigStorage(':');  -- load the passwd file
+B = FOREACH A GENERATE \$0 AS id;              -- extract the user IDs
+STORE B INTO 'pig/id.out';                    -- write the results to a file name id.out
+EOF
+cat id.pig
+
+#A becomes a relation, a bag of tuples, {(root,x,0,0,root,/root,/bin/bash),(bin,x,1,1,bin,/bin,/sbin/nologin), ...}
+
+hdfs dfs -test -d pig/id.out && hdfs dfs -rm -r pig/id.out
+pig -x mapreduce id.pig
+
+hdfs dfs -ls pig/id.out
+hdfs dfs -cat "pig/id.out/*"
+
+----------
+#On hadoopedge, run job stored on hdfs
+hdfs dfs -put id.pig pig
+hdfs dfs -ls pig
+hdfs dfs -cat pig/id.pig
+
+hdfs dfs -test -d pig/id.out && hdfs dfs -rm -r pig/id.out
+pig -x mapreduce hdfs:///user/bjarte/pig/id.pig
+#Or
+#pig -x mapreduce hdfs://hadoopname.dat351:9000/user/bjarte/pig/id.pig
+
+hdfs dfs -ls pig/id.out
+hdfs dfs -cat "pig/id.out/*"
+
+#Interactive
+hdfs dfs -test -d pig/id.out && hdfs dfs -rm -r pig/id.out
+
+pig -x mapreduce
+
+A = LOAD 'pig/passwd' USING PigStorage(':') AS (id:chararray, password:chararray, uid:int, gid:int, finger:chararray, home:chararray, shell:chararray);
+DUMP A;
+ILLUSTRATE A;
+
+B = FOREACH A GENERATE $0 AS id;
+DUMP B;
+ILLUSTRATE B;
+
+STORE B INTO 'pig/id.out';
+
+QUIT;
+
+hdfs dfs -ls pig/id.out
+hdfs dfs -cat "pig/id.out/*"
