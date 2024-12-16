@@ -1,0 +1,233 @@
+########################################################################
+#Slide 4
+
+#On condorw1
+
+cd ~/htcondor
+rm -f ~/htcondor/job/*
+mkdir ~/htcondor/job
+cat > job.condor <<EOF
+Executable   = prog/sumnumbers
+Universe     = standard
+Log          = job/log
+Output       = job/out.\$(Process)
+Error        = job/err.\$(Process)
+
+Arguments    = \$(filename)
+Queue filename matching files input/file?
+EOF
+
+condor_submit job.condor
+condor_status -claimed
+
+condor_q
+condor_q -run
+condor_status
+condor_status -claimed
+
+
+########################################################################
+#Slide 10
+#http://zeromq.org/
+#http://spread.org/
+#https://www.rabbitmq.com/
+
+
+########################################################################
+#Slide 11
+#As root@mpi1
+
+dnf info openmpi
+dnf list "mpich*"
+dnf info mpich
+dnf info mvapich2
+#dnf list openmp
+
+
+########################################################################
+#Slide 12
+#http://mpi-forum.org/mpi-40/
+#http://mpi-forum.org/
+
+
+########################################################################
+#On the mpi programs
+
+#Copy all the c programs to bjarte@mpi1.hvl.no
+
+#Working directory ~/cprog/
+mv ~/cprog ~/mpi
+
+#https://www.mpich.org/
+#https://www.mpich.org/static/downloads/3.2/mpich-3.2-userguide.pdf
+
+
+########################################################################
+#Slide 20
+
+#On mpi1 as bjarte
+
+rsh mpi2
+rsh mpi3
+
+cd ~/mpi
+
+mpicc -o hello hello.c
+mpiexec -f mfile -n 3 ./hello
+
+# Obs. white space after -n
+mpiexec -machinefile mfile -n 3 ./hello
+
+mvapich2
+########################################################################
+#Slide 26
+ls -l /usr/lib64/mpich/bin/mpi*
+
+
+########################################################################
+#Slide 28
+
+mpicc -o hosts hosts.c
+mpiexec -f mfile -n 3 ./hosts
+mpiexec -f mfile -n 6 ./hosts
+mpiexec -f mmfile -n 6 ./hosts
+
+
+########################################################################
+#Slide 35
+
+mpicc -o simple simple.c
+mpiexec -f mfile -n 3 ./simple
+
+
+########################################################################
+#Slide 37
+
+mpicc -o master_slave master_slave.c
+mpiexec -f mfile -n 3 ./master_slave
+
+
+########################################################################
+#Slide 42
+
+mpicc -o send send.c
+mpiexec -f nfile -n 2 ./send
+
+mpiexec -f mfile -n 3 ./send
+
+
+########################################################################
+#Slide 43
+
+mpicc -o any_tag any_tag.c
+mpiexec -f nfile -n 2 ./any_tag
+
+mpicc -o any_source any_source.c
+mpiexec -f nfile -n 2 ./any_source
+
+
+########################################################################
+#Slide 45
+
+mpicc -o bcast bcast.c
+mpiexec -f mfile -n 3 ./bcast
+
+
+########################################################################
+#Slide 47
+
+mpicc -o scatter scatter.c
+mpiexec -f mfile -n 3 ./scatter
+mpiexec -f mfile -n 6 ./scatter
+
+
+########################################################################
+#Slide 51
+
+mpicc -o gather gather.c
+mpiexec -f mfile -n 3 ./gather
+mpiexec -f mfile -n 6 ./gather
+
+
+########################################################################
+#Slide 54
+
+mpicc -o reduce reduce.c
+mpiexec -f mfile -n 3 ./reduce
+mpiexec -f mfile -n 6 ./reduce
+
+
+########################################################################
+#Slide 57
+
+mpicc -o barrier barrier.c
+mpiexec -f mfile -n 3 ./barrier
+
+
+########################################################################
+#Slide 58
+
+mpicc -o ssend ssend.c
+mpiexec -f nfile -n 2 ./ssend
+
+mpicc -o send_alt send_alt.c
+mpiexec -f nfile -n 2 ./send_alt
+
+########################################################################
+#Slide 59
+mpicc -o deadlock deadlock.c
+mpiexec -f nfile -n 2 ./deadlock
+
+mpicc -o send_async send_async.c
+mpiexec -f nfile -n 2 ./send_async
+
+mpicc -o isend isend.c
+mpiexec -f nfile -n 2 ./isend
+
+
+########################################################################
+#Slide 60
+
+#https://wiki.mpich.org/mpich/index.php/Using_the_Hydra_Process_Manager
+
+
+########################################################################
+#Slide 63
+
+#http://docs.adaptivecomputing.com/torque/4-2-10/help.htm
+
+#On slurmmaster, as bjarte
+
+mkdir ~/slurm/mpi
+
+cd ~/slurm/mpi
+
+cat > hosts_mpi.sh <<EOF
+#!/bin/bash
+#SBATCH --job-name=HostsMPI
+#SBATCH --output=%x.%j.out
+#SBATCH --error=%x.%j.err
+#SBATCH --partition=batch
+#SBATCH --nodes=3
+
+srun /share/home/bjarte/mpi/hosts
+EOF
+
+less hosts_mpi.sh
+less /share/home/bjarte/mpi/hosts.c
+
+rm -f *.out* *.err*
+
+sbatch hosts_mpi.sh
+
+squeue
+
+#Below will not work as mpich is built to use Slurm as process scheduler
+#mpicc -o hosts hosts.c
+#salloc -N 2 mpiexec ./hosts
+
+
+########################################################################
+#Slide 65
+
+#http://zeromq.org/
