@@ -411,3 +411,210 @@ Sum: -14968467.316438
 Largest number: 9999.980000
 Smallest number: -9999.990000
 ```
+
+## Task 2
+
+### A Slurm Demonstration
+
+#### Log into Slurm node and cd into directory
+
+```bash
+$ ssh -J dat351@eple.hvl.no student1@slurmmaster.dat351
+Enter passphrase for key '/c/Users/amali/.ssh/id_rsa':
+(dat351@eple.hvl.no) Verification code:
+student1@slurmmaster.dat351's password:
+Last login: Tue Nov 19 19:23:51 2024 from 10.0.0.36
+[student1@slurmmaster ~]$ ls -l
+total 4
+drwxr-xr-x 9 student1 student 92 Nov 19 18:28 dat351
+-rw-r--r-- 1 student1 student 64 Aug 30 13:40 me.txt
+[student1@slurmmaster ~]$ cd dat351/slurm
+```
+
+#### Check that mpich is installed
+
+```bash
+[student1@slurmmaster mpi_job]$ which mpicc
+/usr/lib64/mpich/bin/mpicc
+[student1@slurmmaster mpi_job]$ mpicc --version
+gcc (GCC) 8.5.0 20210514 (Red Hat 8.5.0-22)
+Copyright (C) 2018 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+[student1@slurmmaster mpi_job]$ mpiexec --version
+-bash: mpiexec: command not found
+[student1@slurmmaster mpi_job]$ dpkg -l | grep mpich
+-bash: dpkg: command not found
+[student1@slurmmaster mpi_job]$ rpm -qa | grep mpich
+mpich-3.4.2-1.slurm.el8.x86_64
+python3-mpich-3.4.2-1.slurm.el8.x86_64
+mpich-devel-3.4.2-1.slurm.el8.x86_64
+```
+
+#### Create new dir for mpi jobs, cd into it and write Slurm job script
+
+```bash
+[student1@slurmmaster slurm]$ ls -l
+total 0
+drwxr-xr-x 2 student1 student 114 Nov 19 19:20 example_job
+drwxr-xr-x 2 student1 student 80 Nov 19 19:17 pi_job
+[student1@slurmmaster slurm]$ mkdir mpi_job
+[student1@slurmmaster slurm]$ cd mpi_job/
+[student1@slurmmaster mpi_job]$ cat > hello_mpi << EOF
+> #!/bin/bash
+> #SBATCH --job-name=my*hello_mpi   # Name of the job
+> #SBATCH --output=hello_mpi*%j.txt # Standard output file (%j will be replaced with job ID)
+> #SBATCH --ntasks=3                # Number of tasks (processes)
+> #SBATCH --nodes=3                 # Use 3 nodes
+> #SBATCH --time=00:05:00           # Set a time limit (5 minutes in this example)
+>
+> # Load the required modules (assuming MPICH with Slurm support is already available)
+>
+> module load mpich
+>
+> # Run the MPI program with srun
+>
+> srun /share/home/student1/dat351/mpi/cprog/hello
+> EOF
+```
+
+#### Submit the Slurm Job
+
+```bash
+[student1@slurmmaster mpi_job]$ sbatch hello_mpi.slurm
+Submitted batch job 161700
+[student1@slurmmaster mpi_job]$ squeue
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+            161700     batch my_hello student1 PD       0:00      3 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+```
+
+The message (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions) tells you that the nodes needed for your job are either:
+
+- DOWN: The nodes are not operational.
+- DRAINED: The nodes are being taken out of service for maintenance or other reasons.
+- Reserved for higher priority jobs: Other jobs with higher priority are using those nodes.
+
+#### Check Status for Slurm Nodes Avaliable
+
+    10.0.0.239 (slurmmaster.dat351) – Slurm server and worker node
+    10.0.0.240 (slurmw1.dat351) – Slurm worker node
+    10.0.0.241 (slurmw2.dat351) – Slurm worker node
+
+```bash
+[student1@slurmmaster mpi_job]$ scontrol show nodes
+NodeName=slurmmaster Arch=x86_64 CoresPerSocket=1
+   CPUAlloc=0 CPUTot=2 CPULoad=0.08
+   AvailableFeatures=(null)
+   ActiveFeatures=(null)
+   Gres=(null)
+   NodeAddr=slurmmaster NodeHostName=slurmmaster Version=20.11.9
+   OS=Linux 4.18.0-553.30.1.el8_10.x86_64 #1 SMP Tue Nov 26 18:56:25 UTC 2024
+   RealMemory=1 AllocMem=0 FreeMem=246 Sockets=2 Boards=1
+   State=IDLE ThreadsPerCore=1 TmpDisk=0 Weight=1 Owner=N/A MCS_label=N/A
+   Partitions=batch
+   BootTime=2024-12-06T13:07:06 SlurmdStartTime=2024-12-06T13:07:42
+   CfgTRES=cpu=2,mem=1M,billing=2
+   AllocTRES=
+   CapWatts=n/a
+   CurrentWatts=0 AveWatts=0
+   ExtSensorsJoules=n/s ExtSensorsWatts=0 ExtSensorsTemp=n/s
+   Comment=(null)
+
+NodeName=slurmw1 Arch=x86_64 CoresPerSocket=1
+   CPUAlloc=0 CPUTot=2 CPULoad=0.00
+   AvailableFeatures=(null)
+   ActiveFeatures=(null)
+   Gres=(null)
+   NodeAddr=slurmw1 NodeHostName=slurmw1 Version=20.11.9
+   OS=Linux 4.18.0-553.30.1.el8_10.x86_64 #1 SMP Tue Nov 26 18:56:25 UTC 2024
+   RealMemory=1 AllocMem=0 FreeMem=545 Sockets=2 Boards=1
+   State=IDLE ThreadsPerCore=1 TmpDisk=0 Weight=1 Owner=N/A MCS_label=N/A
+   Partitions=batch
+   BootTime=2024-12-06T13:07:05 SlurmdStartTime=2024-12-06T13:07:43
+   CfgTRES=cpu=2,mem=1M,billing=2
+   AllocTRES=
+   CapWatts=n/a
+   CurrentWatts=0 AveWatts=0
+   ExtSensorsJoules=n/s ExtSensorsWatts=0 ExtSensorsTemp=n/s
+   Comment=(null)
+
+NodeName=slurmw2 CoresPerSocket=1
+   CPUAlloc=0 CPUTot=2 CPULoad=N/A
+   AvailableFeatures=(null)
+   ActiveFeatures=(null)
+   Gres=(null)
+   NodeAddr=slurmw2 NodeHostName=slurmw2
+   RealMemory=1 AllocMem=0 FreeMem=N/A Sockets=2 Boards=1
+   State=DOWN* ThreadsPerCore=1 TmpDisk=0 Weight=1 Owner=N/A MCS_label=N/A
+   Partitions=batch
+   BootTime=None SlurmdStartTime=None
+   CfgTRES=cpu=2,mem=1M,billing=2
+   AllocTRES=
+   CapWatts=n/a
+   CurrentWatts=0 AveWatts=0
+   ExtSensorsJoules=n/s ExtSensorsWatts=0 ExtSensorsTemp=n/s
+   Reason=Not responding [slurm@2024-12-02T10:32:49]
+   Comment=(null)
+```
+
+From the output we can see that we have three nodes listed:
+
+    slurmmaster (Slurm server and worker node)
+    slurmw1 (worker node)
+    slurmw2 (worker node, but it is in a DOWN* state)
+
+`slurmw2` is in a DOWN state and cannot be used for the job.
+`slurmmaster` and `slurmw1` are in an IDLE state, which means they are available and can be used for the job, so we check if the job runs with one or two nodes.
+
+#### Rewrite the script to only use two nodes
+
+```bash
+[student1@slurmmaster mpi_job]$ cat > hello_mpi << EOF
+> #!/bin/bash
+> #SBATCH --job-name=my*hello_mpi   # Name of the job
+> #SBATCH --output=hello_mpi*%j.txt # Standard output file (%j will be replaced with job ID)
+> #SBATCH --ntasks=3                # Number of tasks (processes)
+> #SBATCH --nodes=2                 # Use slurm master and worker node
+> #SBATCH --time=00:05:00           # Set a time limit (5 minutes in this example)
+>
+> # Load the required modules (assuming MPICH with Slurm support is already available)
+>
+> module load mpich
+>
+> # Run the MPI program with srun
+>
+> srun /share/home/student1/dat351/mpi/cprog/hello
+> EOF
+```
+
+```bash
+[student1@slurmmaster mpi_job]$ sbatch hello_mpi.slurm
+Submitted batch job 161703
+[student1@slurmmaster mpi_job]$ squeue
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+[student1@slurmmaster mpi_job]$ ls -l
+total 8
+-rw-r--r-- 1 student1 student 568 Dec 16 15:12 hello_mpi.slurm
+-rw-r--r-- 1 student1 student 473 Dec 16  2024 my_hello_mpi_161703.txt
+[student1@slurmmaster mpi_job]$ cat my_hello_mpi_161703.txt
+Lmod has detected the following error: The following module(s) are unknown:
+"mpich"
+
+Please check the spelling or version number. Also try "module spider ..."
+It is also possible your cache file is out-of-date; it may help to try:
+  $ module --ignore_cache load "mpich"
+
+Also make sure that all modulefiles written in TCL start with the string
+#%Module
+
+
+
+Message from process = 0: Hello, world
+Message from process = 2: Hello, world
+Message from process = 1: Hello, world
+```
+
+We get an error which indicates that the job was successfully submitted and ran, but there was an issue with loading the MPICH module.
+The "mpich" module error should be resolved by either reloading it with --ignore_cache, verifying its availability, or manually setting the paths if necessary.
+The job appears to run successfully with MPI, so even if the module wasn’t loaded properly, the system might have still executed the program with default MPI settings.
