@@ -357,21 +357,13 @@ rm: remove regular file '#sum.c#'? y
 >     return 0;
 > }
 > EOF
-[student1@mpi1 cprog]$ ls -l
-total 60
--rwxr-xr-x 1 student1 student 28080 Oct  7 13:45 hello
--rw-r--r-- 1 student1 student   638 Sep 26 12:54 hello.c
-drwxr-xr-x 2 student1 student   118 Dec 16 13:10 myCPrograms
--rw-r--r-- 1 student1 student  2742 Dec 16  2024 mySum.c
--rwxr-xr-x 1 student1 student 18536 Dec 16 13:15 sum
--rw-r--r-- 1 student1 student  1126 Dec 16 13:10 sum.c
-[student1@mpi1 cprog]$ mpicc mySum.c -lm -o mysum
+[student1@mpi1 cprog]$ mpicc mySum.c -lm -o mySum
 [student1@mpi1 cprog]$ ls -l
 total 92
 -rwxr-xr-x 1 student1 student 28080 Oct  7 13:45 hello
 -rw-r--r-- 1 student1 student   638 Sep 26 12:54 hello.c
 drwxr-xr-x 2 student1 student   118 Dec 16 13:10 myCPrograms
--rwxr-xr-x 1 student1 student 31712 Dec 16 13:46 mysum
+-rwxr-xr-x 1 student1 student 31712 Dec 16 13:46 mySum
 -rw-r--r-- 1 student1 student  2742 Dec 16 13:41 mySum.c
 -rwxr-xr-x 1 student1 student 18536 Dec 16 13:15 sum
 -rw-r--r-- 1 student1 student  1126 Dec 16 13:10 sum.c
@@ -392,3 +384,30 @@ MPI_Reduce is used to aggregate results:
 
 _Root Process Aggregation_:
 Only the root process (rank 0) receives and prints the aggregated results.
+
+#### Re-run the program
+
+```bash
+[student1@mpi1 mpi]$ mpiexec -f machines -n 3 ./cprog/mySum
+Rank 0 - File "/share/dat351/input/file0":
+Local count: 1000000
+Local sum: -6500014.163152
+Local largest: 9999.960000
+Local smallest: -9999.980000
+Rank 2 - File "/share/dat351/input/file2":
+Local count: 1000000
+Local sum: -8785574.264418
+Local largest: 9999.970000
+Local smallest: -9999.970000
+Rank 1 - File "/share/dat351/input/file1":
+Local count: 1000000
+Local sum: 317121.111132
+Local largest: 9999.980000
+Local smallest: -9999.990000
+
+Global Results:
+Number of elements: 3000000
+Sum: -14968467.316438
+Largest number: 9999.980000
+Smallest number: -9999.990000
+```
