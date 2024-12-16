@@ -86,6 +86,8 @@ Hello Hadoop Goodbye Hadoop
 [student1@hadoopedge hadoop]$
 ```
 
+hadoop fs -copyFromLocal /share/home/student1/dat351/hadoop/hadoop-files/wordcount/input/\* /user/student1/wordcount/input/
+
 #### Upload the input files to the HDFS file system (not necessary since Hadoop can stage them when running the program)
 
 ```bash
@@ -263,67 +265,9 @@ drwxr-xr-x 2 student1 student   40 Dec 16 16:14  input
 2024-12-16 17:20:05,342 INFO mapreduce.Job:  map 100% reduce 0%
 2024-12-16 17:20:10,380 INFO mapreduce.Job:  map 100% reduce 100%
 2024-12-16 17:20:10,393 INFO mapreduce.Job: Job job_1734003739512_0008 completed successfully
-2024-12-16 17:20:10,522 INFO mapreduce.Job: Counters: 54
-        File System Counters
-                FILE: Number of bytes read=83
-                FILE: Number of bytes written=827568
-                FILE: Number of read operations=0
-                FILE: Number of large read operations=0
-                FILE: Number of write operations=0
-                HDFS: Number of bytes read=324
-                HDFS: Number of bytes written=35
-                HDFS: Number of read operations=11
-                HDFS: Number of large read operations=0
-                HDFS: Number of write operations=2
-                HDFS: Number of bytes read erasure-coded=0
-        Job Counters
-                Launched map tasks=2
-                Launched reduce tasks=1
-                Data-local map tasks=2
-                Total time spent by all maps in occupied slots (ms)=12194
-                Total time spent by all reduces in occupied slots (ms)=9748
-                Total time spent by all map tasks (ms)=6097
-                Total time spent by all reduce tasks (ms)=2437
-                Total vcore-milliseconds taken by all map tasks=6097
-                Total vcore-milliseconds taken by all reduce tasks=2437
-                Total megabyte-milliseconds taken by all map tasks=12486656
-                Total megabyte-milliseconds taken by all reduce tasks=9981952
-        Map-Reduce Framework
-                Map input records=2
-                Map output records=8
-                Map output bytes=86
-                Map output materialized bytes=89
-                Input split bytes=270
-                Combine input records=8
-                Combine output records=6
-                Reduce input groups=4
-                Reduce shuffle bytes=89
-                Reduce input records=6
-                Reduce output records=4
-                Spilled Records=12
-                Shuffled Maps =2
-                Failed Shuffles=0
-                Merged Map outputs=2
-                GC time elapsed (ms)=156
-                CPU time spent (ms)=1630
-                Physical memory (bytes) snapshot=843587584
-                Virtual memory (bytes) snapshot=11761209344
-                Total committed heap usage (bytes)=705167360
-                Peak Map Physical memory (bytes)=312102912
-                Peak Map Virtual memory (bytes)=3361959936
-                Peak Reduce Physical memory (bytes)=221212672
-                Peak Reduce Virtual memory (bytes)=5038788608
-        Shuffle Errors
-                BAD_ID=0
-                CONNECTION=0
-                IO_ERROR=0
-                WRONG_LENGTH=0
-                WRONG_MAP=0
-                WRONG_REDUCE=0
-        File Input Format Counters
-                Bytes Read=54
-        File Output Format Counters
-                Bytes Written=35
+...
+...
+...
 ```
 
 #### Check the Output
@@ -334,68 +278,6 @@ Found 2 items
 -rw-r--r--   3 student1 student1          0 2024-12-16 17:20 wordcount/output/_SUCCESS
 -rw-r--r--   3 student1 student1         35 2024-12-16 17:20 wordcount/output/part-r-00000
 [student1@hadoopedge wordcount]$ hdfs dfs -cat "wordcount/output/*"
-2024-12-16 17:26:43,347 WARN impl.BlockReaderFactory: I/O error constructing remote block reader.
-java.net.ConnectException: Connection refused
-        at sun.nio.ch.SocketChannelImpl.checkConnect(Native Method)
-        at sun.nio.ch.SocketChannelImpl.finishConnect(SocketChannelImpl.java:716)
-        at org.apache.hadoop.net.SocketIOWithTimeout.connect(SocketIOWithTimeout.java:205)
-        at org.apache.hadoop.net.NetUtils.connect(NetUtils.java:586)
-        at org.apache.hadoop.hdfs.DFSClient.newConnectedPeer(DFSClient.java:3033)
-        at org.apache.hadoop.hdfs.client.impl.BlockReaderFactory.nextTcpPeer(BlockReaderFactory.java:829)
-        at org.apache.hadoop.hdfs.client.impl.BlockReaderFactory.getRemoteBlockReaderFromTcp(BlockReaderFactory.java:754)
-        at org.apache.hadoop.hdfs.client.impl.BlockReaderFactory.build(BlockReaderFactory.java:381)
-        at org.apache.hadoop.hdfs.DFSInputStream.getBlockReader(DFSInputStream.java:755)
-        at org.apache.hadoop.hdfs.DFSInputStream.blockSeekTo(DFSInputStream.java:685)
-        at org.apache.hadoop.hdfs.DFSInputStream.readWithStrategy(DFSInputStream.java:884)
-        at org.apache.hadoop.hdfs.DFSInputStream.read(DFSInputStream.java:957)
-        at java.io.DataInputStream.read(DataInputStream.java:100)
-        at org.apache.hadoop.io.IOUtils.copyBytes(IOUtils.java:94)
-        at org.apache.hadoop.io.IOUtils.copyBytes(IOUtils.java:68)
-        at org.apache.hadoop.io.IOUtils.copyBytes(IOUtils.java:129)
-        at org.apache.hadoop.fs.shell.Display$Cat.printToStdout(Display.java:101)
-        at org.apache.hadoop.fs.shell.Display$Cat.processPath(Display.java:96)
-        at org.apache.hadoop.fs.shell.Command.processPathInternal(Command.java:370)
-        at org.apache.hadoop.fs.shell.Command.processPaths(Command.java:333)
-        at org.apache.hadoop.fs.shell.Command.processPathArgument(Command.java:306)
-        at org.apache.hadoop.fs.shell.Command.processArgument(Command.java:288)
-        at org.apache.hadoop.fs.shell.Command.processArguments(Command.java:272)
-        at org.apache.hadoop.fs.shell.FsCommand.processRawArguments(FsCommand.java:121)
-        at org.apache.hadoop.fs.shell.Command.run(Command.java:179)
-        at org.apache.hadoop.fs.FsShell.run(FsShell.java:327)
-        at org.apache.hadoop.util.ToolRunner.run(ToolRunner.java:81)
-        at org.apache.hadoop.util.ToolRunner.run(ToolRunner.java:95)
-        at org.apache.hadoop.fs.FsShell.main(FsShell.java:390)
-2024-12-16 17:26:43,351 WARN hdfs.DFSClient: Failed to connect to /10.0.0.177:9866 for file /user/student1/wordcount/output/part-r-00000 for block BP-651351515-10.0.0.175-1695113042748:blk_1073744406_3583, add to deadNodes and continue.
-java.net.ConnectException: Connection refused
-        at sun.nio.ch.SocketChannelImpl.checkConnect(Native Method)
-        at sun.nio.ch.SocketChannelImpl.finishConnect(SocketChannelImpl.java:716)
-        at org.apache.hadoop.net.SocketIOWithTimeout.connect(SocketIOWithTimeout.java:205)
-        at org.apache.hadoop.net.NetUtils.connect(NetUtils.java:586)
-        at org.apache.hadoop.hdfs.DFSClient.newConnectedPeer(DFSClient.java:3033)
-        at org.apache.hadoop.hdfs.client.impl.BlockReaderFactory.nextTcpPeer(BlockReaderFactory.java:829)
-        at org.apache.hadoop.hdfs.client.impl.BlockReaderFactory.getRemoteBlockReaderFromTcp(BlockReaderFactory.java:754)
-        at org.apache.hadoop.hdfs.client.impl.BlockReaderFactory.build(BlockReaderFactory.java:381)
-        at org.apache.hadoop.hdfs.DFSInputStream.getBlockReader(DFSInputStream.java:755)
-        at org.apache.hadoop.hdfs.DFSInputStream.blockSeekTo(DFSInputStream.java:685)
-        at org.apache.hadoop.hdfs.DFSInputStream.readWithStrategy(DFSInputStream.java:884)
-        at org.apache.hadoop.hdfs.DFSInputStream.read(DFSInputStream.java:957)
-        at java.io.DataInputStream.read(DataInputStream.java:100)
-        at org.apache.hadoop.io.IOUtils.copyBytes(IOUtils.java:94)
-        at org.apache.hadoop.io.IOUtils.copyBytes(IOUtils.java:68)
-        at org.apache.hadoop.io.IOUtils.copyBytes(IOUtils.java:129)
-        at org.apache.hadoop.fs.shell.Display$Cat.printToStdout(Display.java:101)
-        at org.apache.hadoop.fs.shell.Display$Cat.processPath(Display.java:96)
-        at org.apache.hadoop.fs.shell.Command.processPathInternal(Command.java:370)
-        at org.apache.hadoop.fs.shell.Command.processPaths(Command.java:333)
-        at org.apache.hadoop.fs.shell.Command.processPathArgument(Command.java:306)
-        at org.apache.hadoop.fs.shell.Command.processArgument(Command.java:288)
-        at org.apache.hadoop.fs.shell.Command.processArguments(Command.java:272)
-        at org.apache.hadoop.fs.shell.FsCommand.processRawArguments(FsCommand.java:121)
-        at org.apache.hadoop.fs.shell.Command.run(Command.java:179)
-        at org.apache.hadoop.fs.FsShell.run(FsShell.java:327)
-        at org.apache.hadoop.util.ToolRunner.run(ToolRunner.java:81)
-        at org.apache.hadoop.util.ToolRunner.run(ToolRunner.java:95)
-        at org.apache.hadoop.fs.FsShell.main(FsShell.java:390)
 2024-12-16 17:26:43,418 INFO hdfs.DFSClient: Successfully connected to /10.0.0.179:9866 for BP-651351515-10.0.0.175-1695113042748:blk_1073744406_3583
 Goodbye 2
 Hadoop  2
@@ -693,83 +575,13 @@ adding: wc.jar(in = 3051) (out= 2701)(deflated 11%)
 2024-12-16 18:21:26,501 INFO impl.YarnClientImpl: Submitted application application_1734003739512_0009
 2024-12-16 18:21:26,553 INFO mapreduce.Job: The url to track the job: http://hadoopname.dat351:8088/proxy/application_1734003739512_0009/
 2024-12-16 18:21:26,554 INFO mapreduce.Job: Running job: job_1734003739512_0009
-2024-12-16 18:21:32,598 INFO ipc.Client: Retrying connect to server: hadoopa.dat351/10.0.0.177:41813. Already tried 0 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=3, sleepTime=1000 MILLISECONDS)
-2024-12-16 18:21:33,599 INFO ipc.Client: Retrying connect to server: hadoopa.dat351/10.0.0.177:41813. Already tried 1 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=3, sleepTime=1000 MILLISECONDS)
-2024-12-16 18:21:34,599 INFO ipc.Client: Retrying connect to server: hadoopa.dat351/10.0.0.177:41813. Already tried 2 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=3, sleepTime=1000 MILLISECONDS)
-2024-12-16 18:21:35,705 INFO ipc.Client: Retrying connect to server: hadoopa.dat351/10.0.0.177:41813. Already tried 0 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=3, sleepTime=1000 MILLISECONDS)
-2024-12-16 18:21:36,706 INFO ipc.Client: Retrying connect to server: hadoopa.dat351/10.0.0.177:41813. Already tried 1 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=3, sleepTime=1000 MILLISECONDS)
-2024-12-16 18:21:37,707 INFO ipc.Client: Retrying connect to server: hadoopa.dat351/10.0.0.177:41813. Already tried 2 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=3, sleepTime=1000 MILLISECONDS)
-2024-12-16 18:21:38,813 INFO ipc.Client: Retrying connect to server: hadoopa.dat351/10.0.0.177:41813. Already tried 0 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=3, sleepTime=1000 MILLISECONDS)
-2024-12-16 18:21:39,813 INFO ipc.Client: Retrying connect to server: hadoopa.dat351/10.0.0.177:41813. Already tried 1 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=3, sleepTime=1000 MILLISECONDS)
-2024-12-16 18:21:40,814 INFO ipc.Client: Retrying connect to server: hadoopa.dat351/10.0.0.177:41813. Already tried 2 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=3, sleepTime=1000 MILLISECONDS)
-2024-12-16 18:21:41,922 INFO ipc.Client: Retrying connect to server: hadoopa.dat351/10.0.0.177:41813. Already tried 0 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=3, sleepTime=1000 MILLISECONDS)
-2024-12-16 18:21:42,922 INFO ipc.Client: Retrying connect to server: hadoopa.dat351/10.0.0.177:41813. Already tried 1 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=3, sleepTime=1000 MILLISECONDS)
-2024-12-16 18:21:43,923 INFO ipc.Client: Retrying connect to server: hadoopa.dat351/10.0.0.177:41813. Already tried 2 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=3, sleepTime=1000 MILLISECONDS)
 2024-12-16 18:21:44,071 INFO mapred.ClientServiceDelegate: Application state is completed. FinalApplicationStatus=SUCCEEDED. Redirecting to job history server
 2024-12-16 18:21:44,604 INFO mapreduce.Job: Job job_1734003739512_0009 running in uber mode : false
 2024-12-16 18:21:44,605 INFO mapreduce.Job:  map 100% reduce 100%
 2024-12-16 18:21:44,653 INFO mapreduce.Job: Job job_1734003739512_0009 completed successfully
-2024-12-16 18:21:44,740 INFO mapreduce.Job: Counters: 54
-        File System Counters
-                FILE: Number of bytes read=83
-                FILE: Number of bytes written=827568
-                FILE: Number of read operations=0
-                FILE: Number of large read operations=0
-                FILE: Number of write operations=0
-                HDFS: Number of bytes read=324
-                HDFS: Number of bytes written=35
-                HDFS: Number of read operations=11
-                HDFS: Number of large read operations=0
-                HDFS: Number of write operations=2
-                HDFS: Number of bytes read erasure-coded=0
-        Job Counters
-                Launched map tasks=2
-                Launched reduce tasks=1
-                Data-local map tasks=2
-                Total time spent by all maps in occupied slots (ms)=18630
-                Total time spent by all reduces in occupied slots (ms)=9716
-                Total time spent by all map tasks (ms)=9315
-                Total time spent by all reduce tasks (ms)=2429
-                Total vcore-milliseconds taken by all map tasks=9315
-                Total vcore-milliseconds taken by all reduce tasks=2429
-                Total megabyte-milliseconds taken by all map tasks=19077120
-                Total megabyte-milliseconds taken by all reduce tasks=9949184
-        Map-Reduce Framework
-                Map input records=2
-                Map output records=8
-                Map output bytes=86
-                Map output materialized bytes=89
-                Input split bytes=270
-                Combine input records=8
-                Combine output records=6
-                Reduce input groups=4
-                Reduce shuffle bytes=89
-                Reduce input records=6
-                Reduce output records=4
-                Spilled Records=12
-                Shuffled Maps =2
-                Failed Shuffles=0
-                Merged Map outputs=2
-                GC time elapsed (ms)=307
-                CPU time spent (ms)=1520
-                Physical memory (bytes) snapshot=848871424
-                Virtual memory (bytes) snapshot=11759628288
-                Total committed heap usage (bytes)=762314752
-                Peak Map Physical memory (bytes)=318951424
-                Peak Map Virtual memory (bytes)=3360763904
-                Peak Reduce Physical memory (bytes)=211165184
-                Peak Reduce Virtual memory (bytes)=5038583808
-        Shuffle Errors
-                BAD_ID=0
-                CONNECTION=0
-                IO_ERROR=0
-                WRONG_LENGTH=0
-                WRONG_MAP=0
-                WRONG_REDUCE=0
-        File Input Format Counters
-                Bytes Read=54
-        File Output Format Counters
-                Bytes Written=35
+...
+...
+...
 [student1@hadoopedge wordcount]$ hdfs dfs -ls wordcount/output
 Found 2 items
 -rw-r--r--   3 student1 student1          0 2024-12-16 18:21 wordcount/output/_SUCCESS
@@ -779,4 +591,791 @@ Goodbye 2
 Hadoop  2
 Hello   2
 World   2
+```
+
+## Task 3
+
+### Writing Your Own Hadoop Programs
+
+#### Copy the files from `/share/dat351/java` into currect dir and look at the files.
+
+```bash
+[student1@hadoopedge wordcount]$ cp /share/dat351/java/* .
+[student1@hadoopedge wordcount]$ ls -l
+total 24
+-rw-r--r-- 1 student1 student 3760 Dec 16  2024 CombinerCount.java
+drwxr-xr-x 2 student1 student   40 Dec 16 16:14 input
+-rw-r--r-- 1 student1 student 3062 Dec 16  2024 MapperCount.java
+-rw-r--r-- 1 student1 student 3115 Dec 16  2024 ReducerCount.java
+-rw-r--r-- 1 student1 student 3661 Dec 16  2024 ReducerCountWithCombiner.java
+drwxr-xr-x 2 student1 student  136 Dec 16 18:50 WordCount
+drwxr-xr-x 2 student1 student 4096 Dec 16 18:49 WordCountTools
+```
+
+`[student1@hadoopedge wordcount]$ cat CombinerCount.java`
+
+```java
+import java.io.IOException;
+import java.util.StringTokenizer;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.TaskAttemptID;
+import org.apache.hadoop.mapreduce.TaskID;
+
+import org.apache.hadoop.util.Tool;
+import org.apache.hadoop.util.ToolRunner;
+import org.apache.hadoop.conf.Configured;
+
+public class CombinerCount extends Configured implements Tool {
+
+    public static class CombinerCountMapper
+        extends Mapper<Object, Text, Text, IntWritable>{
+
+        private final static Text outkey = new Text("minvalue");
+        private final static IntWritable one = new IntWritable(1);
+
+        public void map(Object key, Text value, Context context
+            ) throws IOException, InterruptedException {
+            context.write(outkey, one);
+        }
+    }
+
+    public static class CombinerCountCombiner
+        extends Reducer<Text,IntWritable,Text,IntWritable> {
+
+        private Text combiner;
+        private IntWritable listlength = new IntWritable();
+
+        public void setup(Context context) throws IOException, InterruptedException {
+            TaskAttemptID taskattempt = context.getTaskAttemptID();
+            TaskID taskID = taskattempt.getTaskID();
+            int combinerID = taskID.getId();
+            combiner = new Text("Combiner-" + combinerID);
+        }
+
+        public void reduce(Text key, Iterable<IntWritable> values,
+                           Context context
+            ) throws IOException, InterruptedException {
+
+            int count = 0;
+            for (IntWritable val : values) {
+                ++count;
+            }
+            listlength.set(count);
+            context.write(combiner, listlength);
+        }
+    }
+
+    public static class CombinerCountReducer
+        extends Reducer<Text, IntWritable, Text, IntWritable> {
+
+        private IntWritable result = new IntWritable();
+
+        public void reduce(Text key, Iterable<IntWritable> values,
+                           Context context
+            ) throws IOException, InterruptedException {
+
+            int combinecount = 0;
+            for (IntWritable val : values) {
+                // List will have length one
+                combinecount += val.get();
+            }
+            result.set(combinecount);
+            context.write(key, result);
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        int res = ToolRunner.run(new Configuration(), new CombinerCount(), args);
+        System.exit(res);
+    }
+
+    @Override
+    public int run(String[] args) throws Exception {
+
+        if (args.length<2){
+            System.out.println("CombinerCount <inDir> <outDir>");
+            ToolRunner.printGenericCommandUsage(System.out);
+            System.out.println("");
+            return -1;
+        }
+
+        Configuration conf = this.getConf();
+        Job job = Job.getInstance(conf, "Combiner count");
+        job.setJarByClass(CombinerCount.class);
+        job.setMapperClass(CombinerCountMapper.class);
+        job.setCombinerClass(CombinerCountCombiner.class);
+        job.setReducerClass(CombinerCountReducer.class);
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(IntWritable.class);
+        FileInputFormat.addInputPath(job, new Path(args[0]));
+        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+
+        return job.waitForCompletion(true) ? 0 : 1;
+    }
+}
+```
+
+`[student1@hadoopedge wordcount]$ cat MapperCount.java`
+
+```java
+import java.io.IOException;
+import java.util.StringTokenizer;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.TaskAttemptID;
+import org.apache.hadoop.mapreduce.TaskID;
+
+import org.apache.hadoop.util.Tool;
+import org.apache.hadoop.util.ToolRunner;
+import org.apache.hadoop.conf.Configured;
+
+public class MapperCount extends Configured implements Tool {
+
+    public static class MapperCountMapper
+        extends Mapper<Object, Text, Text, IntWritable>{
+
+        private final static IntWritable one = new IntWritable(1);
+        private Text mapper;
+
+        public void setup(Context context) throws IOException, InterruptedException {
+            TaskAttemptID taskattempt = context.getTaskAttemptID();
+            TaskID taskID = taskattempt.getTaskID();
+            int mapperID = taskID.getId();
+            mapper = new Text("Mapper-" + mapperID);
+        }
+
+        public void map(Object key, Text value, Context context
+            ) throws IOException, InterruptedException {
+            context.write(mapper, one);
+        }
+    }
+
+    public static class MapperCountReducer
+        extends Reducer<Text, IntWritable, Text, IntWritable> {
+
+        private IntWritable result = new IntWritable();
+
+        public void reduce(Text key, Iterable<IntWritable> values,
+                           Context context
+            ) throws IOException, InterruptedException {
+
+            int mapcount = 0;
+            for (IntWritable val : values) {
+                // List will have length one
+                mapcount += val.get();
+            }
+            result.set(mapcount);
+            context.write(key, result);
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        int res = ToolRunner.run(new Configuration(), new MapperCount(), args);
+        System.exit(res);
+    }
+
+    @Override
+    public int run(String[] args) throws Exception {
+
+        if (args.length<2){
+            System.out.println("MapperCount <inDir> <outDir>");
+            ToolRunner.printGenericCommandUsage(System.out);
+            System.out.println("");
+            return -1;
+        }
+
+        Configuration conf = this.getConf();
+        Job job = Job.getInstance(conf, "Mapper count");
+        job.setJarByClass(MapperCount.class);
+        job.setMapperClass(MapperCountMapper.class);
+        job.setReducerClass(MapperCountReducer.class);
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(IntWritable.class);
+        FileInputFormat.addInputPath(job, new Path(args[0]));
+        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+
+        return job.waitForCompletion(true) ? 0 : 1;
+    }
+}
+```
+
+`[student1@hadoopedge wordcount]$ cat ReducerCount.java`
+
+```java
+import java.io.IOException;
+import java.util.StringTokenizer;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.TaskAttemptID;
+import org.apache.hadoop.mapreduce.TaskID;
+
+import org.apache.hadoop.util.Tool;
+import org.apache.hadoop.util.ToolRunner;
+import org.apache.hadoop.conf.Configured;
+
+public class ReducerCount extends Configured implements Tool {
+
+    public static class ReducerCountMapper
+        extends Mapper<Object, Text, Text, IntWritable>{
+
+        private final static Text outkey = new Text("thekey");
+        private final static IntWritable one = new IntWritable(1);
+
+        public void map(Object key, Text value, Context context
+                        ) throws IOException, InterruptedException {
+            context.write(outkey, one);
+        }
+    }
+
+    public static class ReducerCountReducer
+        extends Reducer<Text, IntWritable, Text, IntWritable> {
+
+        private Text reducer;
+        private IntWritable listlength = new IntWritable();
+
+        public void setup(Context context) throws IOException, InterruptedException {
+            TaskAttemptID taskattempt = context.getTaskAttemptID();
+            TaskID taskID = taskattempt.getTaskID();
+            int reducerID = taskID.getId();
+            reducer = new Text("Reducer-" + reducerID);
+        }
+
+        public void reduce(Text key, Iterable<IntWritable> values,
+                           Context context
+                           ) throws IOException, InterruptedException {
+
+            int count = 0;
+            for (IntWritable val : values) {
+                ++count;
+            }
+            listlength.set(count);
+            context.write(reducer, listlength);
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        int res = ToolRunner.run(new Configuration(), new ReducerCount(), args);
+        System.exit(res);
+    }
+
+    @Override
+    public int run(String[] args) throws Exception {
+
+        if (args.length<2){
+            System.out.println("ReducerCount <inDir> <outDir>");
+            ToolRunner.printGenericCommandUsage(System.out);
+            System.out.println("");
+            return -1;
+        }
+
+        Configuration conf = this.getConf();
+        Job job = Job.getInstance(conf, "Reducer count");
+        job.setJarByClass(ReducerCount.class);
+        job.setMapperClass(ReducerCountMapper.class);
+        job.setReducerClass(ReducerCountReducer.class);
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(IntWritable.class);
+        FileInputFormat.addInputPath(job, new Path(args[0]));
+        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+
+        return job.waitForCompletion(true) ? 0 : 1;
+    }
+}
+```
+
+`[student1@hadoopedge wordcount]$ cat ReducerCountWithCombiner.java`
+
+```java
+import java.io.IOException;
+import java.util.StringTokenizer;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.TaskAttemptID;
+import org.apache.hadoop.mapreduce.TaskID;
+
+import org.apache.hadoop.util.Tool;
+import org.apache.hadoop.util.ToolRunner;
+import org.apache.hadoop.conf.Configured;
+
+public class ReducerCountWithCombiner extends Configured implements Tool {
+
+    public static class ReducerCountMapper
+        extends Mapper<Object, Text, Text, IntWritable>{
+
+        private final static Text outkey = new Text("minvalue");
+        private final static IntWritable one = new IntWritable(1);
+
+        public void map(Object key, Text value, Context context
+            ) throws IOException, InterruptedException {
+            context.write(outkey, one);
+        }
+    }
+
+    public static class ReducerCountCombiner
+        extends Reducer<Text,IntWritable,Text,IntWritable> {
+
+        private final static Text outkey = new Text("minvalue");
+        private final static IntWritable one = new IntWritable(1);
+
+        public void reduce(Text key, Iterable<IntWritable> values,
+                           Context context
+            ) throws IOException, InterruptedException {
+
+            context.write(outkey, one);
+        }
+    }
+
+    public static class ReducerCountReducer
+        extends Reducer<Text, IntWritable, Text, IntWritable> {
+
+        private Text reducer;
+        private IntWritable listlength = new IntWritable();
+
+        public void setup(Context context) throws IOException, InterruptedException {
+            TaskAttemptID taskattempt = context.getTaskAttemptID();
+            TaskID taskID = taskattempt.getTaskID();
+            int reducerID = taskID.getId();
+            reducer = new Text("Reducer-" + reducerID);
+        }
+
+        public void reduce(Text key, Iterable<IntWritable> values,
+                           Context context
+            ) throws IOException, InterruptedException {
+
+            int count = 0;
+            for (IntWritable val : values) {
+                ++count;
+            }
+            listlength.set(count);
+            context.write(reducer, listlength);
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        int res = ToolRunner.run(new Configuration(), new ReducerCountWithCombiner(), args);
+        System.exit(res);
+    }
+
+    @Override
+    public int run(String[] args) throws Exception {
+
+        if (args.length<2){
+            System.out.println("ReducerCountWithCombiner <inDir> <outDir>");
+            ToolRunner.printGenericCommandUsage(System.out);
+            System.out.println("");
+            return -1;
+        }
+
+        Configuration conf = this.getConf();
+        Job job = Job.getInstance(conf, "Reducer count with combiner");
+        job.setJarByClass(ReducerCountWithCombiner.class);
+        job.setMapperClass(ReducerCountMapper.class);
+        job.setCombinerClass(ReducerCountCombiner.class);
+        job.setReducerClass(ReducerCountReducer.class);
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(IntWritable.class);
+        FileInputFormat.addInputPath(job, new Path(args[0]));
+        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+
+        return job.waitForCompletion(true) ? 0 : 1;
+    }
+}
+```
+
+#### Create Output Directories in HDFS for the respective classes
+
+```bash
+[student1@hadoopedge myHadoopPrograms]$ hdfs dfs -mkdir -p /user/student1/wordcount/output_count_numbers
+[student1@hadoopedge myHadoopPrograms]$ hdfs dfs -mkdir -p /user/student1/wordcount/output_find_smallest
+[student1@hadoopedge myHadoopPrograms]$ hdfs dfs -mkdir -p /user/student1/wordcount/output_find_largest
+[student1@hadoopedge myHadoopPrograms]$ hdfs dfs -mkdir -p /user/student1/wordcount/output_sum_numbers
+[student1@hadoopedge myHadoopPrograms]$ hdfs dfs -mkdir -p /user/student1/wordcount/output_digit_sum
+```
+
+##### Organize the Previous Output Folders, Remove Old Output
+
+```bash
+[student1@hadoopedge myHadoopPrograms]$ hdfs dfs -mkdir -p /user/student1/wordcount/output_wordcount_tools
+[student1@hadoopedge myHadoopPrograms]$ hdfs dfs -mv /user/student1/wordcount/output /user/student1/wordcount/output_wordcount
+```
+
+```bash
+# Remove the previous wordcount output directory
+hdfs dfs -rm -r /user/student1/wordcount/output_wordcount
+hdfs dfs -rm -r /user/student1/wordcount/output_wordcount_tools
+
+# Remove the previous output directories for each of the tasks
+hdfs dfs -rm -r /user/student1/wordcount/output_count_numbers
+hdfs dfs -rm -r /user/student1/wordcount/output_find_smallest
+hdfs dfs -rm -r /user/student1/wordcount/output_find_largest
+hdfs dfs -rm -r /user/student1/wordcount/output_sum_numbers
+hdfs dfs -rm -r /user/student1/wordcount/output_digit_sum
+```
+
+#### Create Input Directories in HDFS, Re-run Jobs, and Check Output
+
+```bash
+# Create Input folders by copying from local
+[student1@hadoopedge input]$ hadoop fs -copyFromLocal /share/home/student1/dat351/hadoop/hadoop-files/wordcount/input/* /user/student1/wordcount/input/
+[student1@hadoopedge input]$ hadoop fs -ls /user/student1/wordcount/input
+Found 2 items
+-rw-r--r--   3 student1 student1         26 2024-12-16 21:06 /user/student1/wordcount/input/file01.txt
+-rw-r--r--   3 student1 student1         28 2024-12-16 21:06 /user/student1/wordcount/input/file02.txt
+[student1@hadoopedge input]$ hadoop fs -cat /user/student1/wordcount/input/file01.txt
+Hello World Goodbye World
+[student1@hadoopedge input]$ hadoop fs -cat /user/student1/wordcount/input/file02.txt
+Hello Hadoop Goodbye Hadoop
+
+# Run the WordCount job with the input and output directories
+hadoop jar /share/home/student1/dat351/hadoop/hadoop-files/wordcount/WordCount/WordCount.jar WordCount /user/student1/wordcount/input /user/student1/wordcount/output_wordcount
+
+# Run the WordCountTools job with the input and output directories
+hadoop jar /share/home/student1/dat351/hadoop/hadoop-files/wordcount/WordCountTools/WordCountTools.jar WordCountTools /user/student1/wordcount/input /user/student1/wordcount/output_wordcount_tools
+
+# Check output
+[student1@hadoopedge input]$ hadoop fs -ls /user/student1/wordcount/output_wordcount
+Found 2 items
+-rw-r--r--   3 student1 student1          0 2024-12-16 21:10 /user/student1/wordcount/output_wordcount/_SUCCESS
+-rw-r--r--   3 student1 student1         35 2024-12-16 21:10 /user/student1/wordcount/output_wordcount/part-r-00000
+[student1@hadoopedge input]$ hadoop fs -cat /user/student1/wordcount/output_wordcount/part-r-00000
+...
+...
+...
+2024-12-16 21:12:14,719 INFO hdfs.DFSClient: Successfully connected to /10.0.0.178:9866 for BP-651351515-10.0.0.175-1695113042748:blk_1073744480_3657
+Goodbye 2
+Hadoop  2
+Hello   2
+World   2
+[student1@hadoopedge input]$ hadoop fs -ls /user/student1/wordcount/output_wordcount_tools
+Found 2 items
+-rw-r--r--   3 student1 student1          0 2024-12-16 21:10 /user/student1/wordcount/output_wordcount_tools/_SUCCESS
+-rw-r--r--   3 student1 student1         35 2024-12-16 21:10 /user/student1/wordcount/output_wordcount_tools/part-r-00000
+[student1@hadoopedge input]$ hadoop fs -cat /user/student1/wordcount/output_wordcount_tools/part-r-00000
+Goodbye 2
+Hadoop  2
+Hello   2
+World   2
+```
+
+#### Create Input Directories in HDFS for mapReduceNrw
+
+```bash
+# Create Input folders by copying from local
+[student1@hadoopedge input]$ hadoop fs -copyFromLocal /share/dat351/input/* /user/student1/mapReduceNrs/input/
+[student1@hadoopedge input]$ hadoop fs -ls /user/student1/mapReduceNrs/input/
+```
+
+#### Create a Directory and Javas File for Counting Numbers
+
+```bash
+[student1@hadoopedge CountNumbers]$ pwd
+/share/home/student1/dat351/hadoop/hadoop-files/wordcount/CountNumbers
+[student1@hadoopedge CountNumbers]$ ls -l
+total 28
+-rw-r--r-- 1 student1 student 1215 Dec 16 20:04 CountNumbers.java
+-rw-r--r-- 1 student1 student  536 Dec 16 20:05 CountNumbersMapper.java
+-rw-r--r-- 1 student1 student  623 Dec 16 20:06 CountNumbersReducer.java
+```
+
+`[student1@hadoopedge CountNumbers]$ cat CountNumbers.java`
+
+```java
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.fs.Path;
+import java.io.IOException;
+
+public class CountNumbers {
+
+    public static void main(String[] args) throws Exception {
+        // Set up the job
+        Job job = Job.getInstance();
+        job.setJarByClass(CountNumbers.class);
+        job.setJobName("Count Numbers");
+
+        // Set the input and output directories
+        FileInputFormat.addInputPath(job, new Path(args[0]));
+        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+
+        // Set the Mapper and Reducer classes
+        job.setMapperClass(CountNumbersMapper.class);
+        job.setReducerClass(CountNumbersReducer.class);
+
+        // Set the output key and value types
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(IntWritable.class);
+
+        // Wait for the job to complete
+        System.exit(job.waitForCompletion(true) ? 0 : 1);
+    }
+}
+```
+
+`[student1@hadoopedge CountNumbers]$ cat CountNumbersMapper.java`
+
+```java
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
+import java.io.IOException;
+
+public class CountNumbersMapper extends Mapper<Object, Text, Text, IntWritable> {
+    private final static Text outkey = new Text("totalNumbers");
+    private final static IntWritable one = new IntWritable(1);
+
+    public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
+        context.write(outkey, one); // Increment the total count
+    }
+}
+```
+
+`[student1@hadoopedge CountNumbers]$ cat CountNumbersReducer.java`
+
+```java
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Reducer;
+import java.io.IOException;
+
+public class CountNumbersReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
+    private IntWritable result = new IntWritable();
+
+    public void reduce(Text key, Iterable<IntWritable> values, Context context)
+            throws IOException, InterruptedException {
+        int sum = 0;
+        for (IntWritable val : values) {
+            sum += val.get();
+        }
+        result.set(sum);
+        context.write(key, result); // Output the total count
+    }
+}
+```
+
+#### Compile the Java Files With Java 8 and Create the JAR
+
+```bash
+javac -classpath $(hadoop classpath) -source 1.8 -target 1.8 *.java
+warning: [options] bootstrap class path not set in conjunction with -source 8
+warning: [options] source value 8 is obsolete and will be removed in a future release
+warning: [options] target value 8 is obsolete and will be removed in a future release
+warning: [options] To suppress warnings about obsolete options, use -Xlint:-options.
+4 warnings
+[student1@hadoopedge CountNumbers]$ ls -l
+total 28
+-rw-r--r-- 1 student1 student 1283 Dec 16 20:12 CountNumbers.class
+-rw-r--r-- 1 student1 student 2819 Dec 16 20:06 CountNumbers.jar
+-rw-r--r-- 1 student1 student 1215 Dec 16 20:04 CountNumbers.java
+-rw-r--r-- 1 student1 student 1523 Dec 16 20:12 CountNumbersMapper.class
+-rw-r--r-- 1 student1 student  536 Dec 16 20:05 CountNumbersMapper.java
+-rw-r--r-- 1 student1 student 1741 Dec 16 20:12 CountNumbersReducer.class
+-rw-r--r-- 1 student1 student  623 Dec 16 20:06 CountNumbersReducer.java
+[student1@hadoopedge CountNumbers]$ jar -cvf CountNumbers.jar *.class
+added manifest
+adding: CountNumbers.class(in = 1283) (out= 728)(deflated 43%)
+adding: CountNumbersMapper.class(in = 1523) (out= 621)(deflated 59%)
+adding: CountNumbersReducer.class(in = 1741) (out= 740)(deflated 57%)
+```
+
+#### Clean Output Folder and Run Hadoop Job
+
+```bash
+[student1@hadoopedge CountNumbers]$ hadoop fs -rm -r /user/student1/wordcount/output_count_numbers
+2024-12-16 20:21:16,587 INFO fs.TrashPolicyDefault: Moved: 'hdfs://hadoopname.dat351:9000/user/student1/wordcount/output_count_numbers' to trash at: hdfs://hadoopname.dat351:9000/user/student1/.Trash/Current/user/student1/wordcount/output_count_numbers
+```
+
+#### Create a Directory and Javas File for Finding Smallest Number
+
+```bash
+[student1@hadoopedge FindSmallest]$ ls -l
+total 12
+-rw-r--r-- 1 student1 student 1215 Dec 16 20:30 FindSmallest.java
+-rw-r--r-- 1 student1 student  659 Dec 16 20:34 FindSmallestMapper.java
+-rw-r--r-- 1 student1 student  807 Dec 16  2024 FindSmallestReducer.java
+```
+
+`[student1@hadoopedge FindSmallest]$ cat FindSmallest.java`
+
+```java
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.fs.Path;
+import java.io.IOException;
+
+public class FindSmallest {
+
+    public static void main(String[] args) throws Exception {
+        // Set up the job
+        Job job = Job.getInstance();
+        job.setJarByClass(FindSmallest.class);
+        job.setJobName("Find Smallest");
+
+        // Set the input and output directories
+        FileInputFormat.addInputPath(job, new Path(args[0]));
+        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+
+        // Set the Mapper and Reducer classes
+        job.setMapperClass(FindSmallestMapper.class);
+        job.setReducerClass(FindSmallestReducer.class);
+
+        // Set the output key and value types
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(IntWritable.class);
+
+        // Wait for the job to complete
+        System.exit(job.waitForCompletion(true) ? 0 : 1);
+    }
+}
+```
+
+`[student1@hadoopedge FindSmallest]$ cat FindSmallestMapper.java`
+
+```java
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
+import java.io.IOException;
+
+public class FindSmallestMapper extends Mapper<Object, Text, Text, IntWritable> {
+
+    private final static Text outkey = new Text("smallest");
+
+    public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
+        try {
+            int number = Integer.parseInt(value.toString());
+            context.write(outkey, new IntWritable(number));
+        } catch (NumberFormatException e) {
+            // Handle the case where the value is not an integer
+        }
+    }
+}
+```
+
+`[student1@hadoopedge FindSmallest]$ cat FindSmallestReducer.java`
+
+```java
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Reducer;
+import java.io.IOException;
+
+public class FindSmallestReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
+    private IntWritable result = new IntWritable();
+
+    public void reduce(Text key, Iterable<IntWritable> values, Context context)
+            throws IOException, InterruptedException {
+        int smallest = Integer.MAX_VALUE;
+
+        // Iterate over the values and find the smallest one
+        for (IntWritable val : values) {
+            int number = val.get();
+            if (number < smallest) {
+                smallest = number;
+            }
+        }
+
+        result.set(smallest);
+        context.write(key, result); // Output the smallest value
+    }
+}
+```
+
+#### Compile the Java Files With Java 8 and Create the JAR
+
+```bash
+[student1@hadoopedge FindSmallest]$ javac -classpath $(hadoop classpath) -source 1.8 -target 1.8 *.java
+warning: [options] bootstrap class path not set in conjunction with -source 8
+warning: [options] source value 8 is obsolete and will be removed in a future release
+warning: [options] target value 8 is obsolete and will be removed in a future release
+warning: [options] To suppress warnings about obsolete options, use -Xlint:-options.
+4 warnings
+[student1@hadoopedge FindSmallest]$ jar -cvf FindSmallest.jar *.class
+added manifest
+adding: FindSmallest.class(in = 1283) (out= 730)(deflated 43%)
+adding: FindSmallestMapper.class(in = 1661) (out= 706)(deflated 57%)
+adding: FindSmallestReducer.class(in = 1787) (out= 772)(deflated 56%)
+[student1@hadoopedge FindSmallest]$ ls -l
+total 28
+-rw-r--r-- 1 student1 student 1283 Dec 16 20:38 FindSmallest.class
+-rw-r--r-- 1 student1 student 2936 Dec 16 20:39 FindSmallest.jar
+-rw-r--r-- 1 student1 student 1215 Dec 16 20:30 FindSmallest.java
+-rw-r--r-- 1 student1 student 1661 Dec 16 20:38 FindSmallestMapper.class
+-rw-r--r-- 1 student1 student  659 Dec 16 20:34 FindSmallestMapper.java
+-rw-r--r-- 1 student1 student 1787 Dec 16 20:38 FindSmallestReducer.class
+-rw-r--r-- 1 student1 student  807 Dec 16 20:35 FindSmallestReducer.java
+```
+
+#### Run Count Numbers and Find Smallest in Hadoop and Check Output
+
+```bash
+# Run the CountNumbers job with the input and output directories
+hadoop jar /share/home/student1/dat351/hadoop/hadoop-files/wordcount/CountNumbers/CountNumbers.jar CountNumbers /user/student1/mapReduceNrs/input/ /user/student1/mapReduceNrs/output_count_nrs
+
+# Run the FindSmallest job with the input and output directories
+hadoop jar /share/home/student1/dat351/hadoop/hadoop-files/wordcount/FindSmallest/FindSmallest.jar FindSmallest /user/student1/mapReduceNrs/input/ /user/student1/mapReduceNrs/output_find_smallest
+
+# Check output
+[student1@hadoopedge FindSmallest]$ hadoop fs -ls /user/student1/mapReduceNrs/output_count_nrs
+Found 2 items
+-rw-r--r--   3 student1 student1          0 2024-12-16 22:04 /user/student1/mapReduceNrs/output_count_nrs/_SUCCESS
+-rw-r--r--   3 student1 student1         21 2024-12-16 22:04 /user/student1/mapReduceNrs/output_count_nrs/part-r-00000
+[student1@hadoopedge FindSmallest]$ hadoop fs -cat /user/student1/mapReduceNrs/output_count_nrs/part-r-00000
+...
+...
+...
+2024-12-16 22:06:32,661 INFO hdfs.DFSClient: Successfully connected to /10.0.0.179:9866 for BP-651351515-10.0.0.175-1695113042748:blk_1073744505_3682
+totalNumbers    3000000
+[student1@hadoopedge FindSmallest]$ hadoop fs -ls /user/student1/mapReduceNrs/output_find_smallest
+Found 2 items
+-rw-r--r--   3 student1 student1          0 2024-12-16 22:04 /user/student1/mapReduceNrs/output_find_smallest/_SUCCESS
+-rw-r--r--   3 student1 student1         15 2024-12-16 22:04 /user/student1/mapReduceNrs/output_find_smallest/part-r-00000
+[student1@hadoopedge FindSmallest]$ hadoop fs -cat /user/student1/mapReduceNrs/output_find_smallest/part-r-00000
+...
+...
+...
+2024-12-16 22:08:03,319 INFO hdfs.DFSClient: Successfully connected to /10.0.0.178:9866 for BP-651351515-10.0.0.175-1695113042748:blk_1073744515_3692
+smallest        -9999
 ```
